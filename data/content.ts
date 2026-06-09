@@ -128,23 +128,28 @@ export const services: Service[] = [
 export type Project = {
   id: string;
   title: string;
-  category: "YouTube SEO" | "Meta Ads" | "Google Ads" | "Shopify";
+  category: "YouTube SEO" | "Meta Ads" | "Google Ads" | "Shopify" | "Social Media";
   cover: string;
+  images: string[];
   description: string;
   result: string;
   tags: string[];
   metrics: { label: string; before: string; after: string }[];
 };
 
-export const categories = ["All", "YouTube SEO", "Meta Ads", "Google Ads", "Shopify"] as const;
+export const categories = ["All", "YouTube SEO", "Meta Ads", "Google Ads", "Shopify", "Social Media"] as const;
 
 export const projects: Project[] = [
   {
     id: "tech-channel",
     title: "Tech Review Channel Scale-Up",
     category: "YouTube SEO",
-    cover:
-      "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?auto=format&fit=crop&w=1200&q=80",
+    cover: "/portfolio/youtube-seo-analytics.png",
+    images: [
+      "/portfolio/youtube-seo-analytics.png",
+      "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1200&q=80",
+    ],
     description:
       "Rebuilt the channel's metadata system and packaging to break a long views plateau.",
     result: "4.2x channel views in 90 days",
@@ -161,6 +166,11 @@ export const projects: Project[] = [
     category: "Meta Ads",
     cover:
       "https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=1200&q=80",
+    images: [
+      "https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1563986768494-4dee2763ff3f?auto=format&fit=crop&w=1200&q=80",
+    ],
     description:
       "Restructured the ad account into a clean full-funnel and scaled spend profitably.",
     result: "3.8x ROAS at 5x spend",
@@ -177,6 +187,11 @@ export const projects: Project[] = [
     category: "Google Ads",
     cover:
       "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1200&q=80",
+    images: [
+      "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1200&q=80",
+    ],
     description:
       "Intent-mapped search campaigns with tightened match types and landing alignment.",
     result: "-58% cost per lead",
@@ -193,6 +208,11 @@ export const projects: Project[] = [
     category: "Shopify",
     cover:
       "https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=1200&q=80",
+    images: [
+      "https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&w=1200&q=80",
+    ],
     description:
       "Redesigned the store with a faster theme, sharper PDP, and a streamlined checkout.",
     result: "+71% conversion rate",
@@ -209,6 +229,11 @@ export const projects: Project[] = [
     category: "YouTube SEO",
     cover:
       "https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=1200&q=80",
+    images: [
+      "https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=1200&q=80",
+    ],
     description:
       "Reverse-engineered top competitors and rebuilt the upload + packaging cadence.",
     result: "0 → 100K subs in 7 months",
@@ -225,6 +250,11 @@ export const projects: Project[] = [
     category: "Meta Ads",
     cover:
       "https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?auto=format&fit=crop&w=1200&q=80",
+    images: [
+      "https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1524758631624-e2822e304c36?auto=format&fit=crop&w=1200&q=80",
+    ],
     description:
       "Paired creative-led Meta acquisition with a CRO'd Shopify funnel for compounding returns.",
     result: "$0 → $140K in 6 months",
@@ -234,6 +264,83 @@ export const projects: Project[] = [
       { label: "ROAS", before: "—", after: "4.1x" },
       { label: "Repeat rate", before: "—", after: "28%" },
     ],
+  },
+  {
+    id: "surgeon-kibria",
+    title: "Surgeon SMG Kibria — Facebook Page",
+    category: "Social Media",
+    cover: "/portfolio/dr-kibria.jpg",
+    images: [
+      "/portfolio/dr-kibria.jpg",
+      "/portfolio/dr-kibria-dashboard.jpg",
+      "https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?auto=format&fit=crop&w=1200&q=80",
+    ],
+    description:
+      "Full Facebook page management for Surgeon SMG Kibria — content creation, post scheduling, community engagement, and audience growth strategy to build trust and visibility for a medical professional.",
+    result: "3x reach & 4x engagement",
+    tags: ["Facebook", "Content Strategy", "Healthcare", "Community Management"],
+    metrics: [
+      { label: "Page followers", before: "800", after: "4.2K" },
+      { label: "Avg. post reach", before: "300", after: "6.8K" },
+      { label: "Engagement rate", before: "1.2%", after: "5.7%" },
+    ],
+  },
+  {
+    id: "dr-nazma",
+    title: "Dr Nur e Nazma — Facebook Page",
+    category: "Social Media",
+    cover: "/portfolio/dr-nazma.jpg",
+    images: [
+      "/portfolio/dr-nazma.jpg",
+      "/portfolio/nazma-dashboard.jpg",
+      "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=1200&q=80",
+    ],
+    description:
+      "End-to-end Facebook page management for Dr Nur e Nazma — strategic content calendar, audience engagement, organic reach growth, and brand positioning for a healthcare professional.",
+    result: "2.8x reach in 3 months",
+    tags: ["Facebook", "Healthcare", "Content Creation", "Organic Growth"],
+    metrics: [
+      { label: "Page followers", before: "400", after: "2.1K" },
+      { label: "Avg. post reach", before: "180", after: "4.5K" },
+      { label: "Engagement rate", before: "0.9%", after: "4.8%" },
+    ],
+  },
+];
+
+/* ------------------------------------------------------------------ */
+/* Certificates                                                        */
+/* ------------------------------------------------------------------ */
+export type Certificate = {
+  id: string;
+  name: string;
+  issuer: string;
+  image: string;
+};
+
+export const certificates: Certificate[] = [
+  {
+    id: "google-seo",
+    name: "Google SEO",
+    issuer: "Google",
+    image: "/certificate/google-seo.jpg",
+  },
+  {
+    id: "digital-marketing-ecommerce",
+    name: "Foundations of Digital Marketing & E-commerce",
+    issuer: "Google",
+    image: "/certificate/digital-marketing-ecommerce.jpg",
+  },
+  {
+    id: "social-media-1",
+    name: "Social Media Marketing",
+    issuer: "Certified",
+    image: "/certificate/social-media-marketing.jpg",
+  },
+  {
+    id: "computer-office",
+    name: "Basic Computer & Office Application (360H)",
+    issuer: "Technical Training Institute",
+    image: "/certificate/basic-computer-office.jpg",
   },
 ];
 

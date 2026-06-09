@@ -45,7 +45,7 @@ export function Hero() {
           <div className="glass overflow-hidden rounded-[1.5rem] p-1.5 shadow-cinematic sm:rounded-[2rem] sm:p-2">
             <div className="relative aspect-square overflow-hidden rounded-[1rem] sm:aspect-[4/5] sm:rounded-[1.5rem]">
               <Image
-                src="/profile%20image.jpg"
+                src="/profile-image.jpg"
                 alt="Md Mizanur Rahman"
                 fill
                 priority

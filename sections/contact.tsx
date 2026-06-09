@@ -87,11 +87,25 @@ export function Contact() {
     e.preventDefault();
     if (!validate()) return;
     setStatus("sending");
-    // Wire to your API route / form service here.
-    await new Promise((r) => setTimeout(r, 1200));
-    setStatus("done");
-    setForm({ name: "", email: "", message: "" });
-    setTimeout(() => setStatus("idle"), 3500);
+    try {
+      const res = await fetch("https://formsubmit.co/ajax/mm.mizanur2020@gmail.com", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({
+          name: form.name,
+          email: form.email,
+          message: form.message,
+          _subject: `Portfolio inquiry from ${form.name}`,
+          _captcha: "false",
+        }),
+      });
+      if (!res.ok) throw new Error("failed");
+      setStatus("done");
+      setForm({ name: "", email: "", message: "" });
+      setTimeout(() => setStatus("idle"), 3500);
+    } catch {
+      setStatus("idle");
+    }
   };
 
   const socials = [

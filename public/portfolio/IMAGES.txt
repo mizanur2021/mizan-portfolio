@@ -1,0 +1,64 @@
+PUT YOUR PORTFOLIO IMAGES HERE
+================================
+
+Drop your screenshots and project images into this folder.
+Use JPG or PNG format. Recommended size: 1200 x 675 px (16:9).
+
+NAMING CONVENTION
+-----------------
+{project-id}-{number}.jpg
+
+CURRENT PROJECTS AND THEIR IDs:
+---------------------------------
+
+  tech-channel      → Tech Review Channel Scale-Up
+    tech-channel-1.jpg
+    tech-channel-2.jpg
+    tech-channel-3.jpg
+
+  dtc-skincare      → DTC Skincare Meta Scaling
+    dtc-skincare-1.jpg
+    dtc-skincare-2.jpg
+    dtc-skincare-3.jpg
+
+  saas-search       → B2B SaaS Google Search
+    saas-search-1.jpg
+    saas-search-2.jpg
+    saas-search-3.jpg
+
+  fashion-shopify   → Fashion Brand Storefront
+    fashion-shopify-1.jpg
+    fashion-shopify-2.jpg
+    fashion-shopify-3.jpg
+
+  gaming-channel    → Gaming Channel Revival
+    gaming-channel-1.jpg
+    gaming-channel-2.jpg
+    gaming-channel-3.jpg
+
+  home-decor        → Home Decor Meta + Shopify
+    home-decor-1.jpg
+    home-decor-2.jpg
+    home-decor-3.jpg
+
+  surgeon-kibria    → Surgeon SMG Kibria Facebook Page
+    surgeon-kibria-1.jpg
+    surgeon-kibria-2.jpg
+    surgeon-kibria-3.jpg
+
+
+HOW TO USE YOUR IMAGES
+-----------------------
+After dropping your images here, open:
+  data/content.ts
+
+Find the project you want to update and replace the Unsplash URL with the local path.
+Example:
+
+  images: [
+    "/portfolio/surgeon-kibria-1.jpg",
+    "/portfolio/surgeon-kibria-2.jpg",
+    "/portfolio/surgeon-kibria-3.jpg",
+  ],
+
+The path always starts with /portfolio/ (no "public" prefix needed).

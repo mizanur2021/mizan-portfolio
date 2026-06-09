@@ -6,8 +6,10 @@ import { Services } from "@/sections/services";
 import { Portfolio } from "@/sections/portfolio";
 import { Testimonials } from "@/sections/testimonials";
 import { Resume } from "@/sections/resume";
+import { Certificates } from "@/sections/certificates";
 import { Contact } from "@/sections/contact";
 import { Footer } from "@/sections/footer";
+import { WhatsAppPopup } from "@/components/shared/whatsapp-popup";
 
 export default function Home() {
   return (
@@ -21,9 +23,11 @@ export default function Home() {
         <Portfolio />
         <Testimonials />
         <Resume />
+        <Certificates />
         <Contact />
       </main>
       <Footer />
+      <WhatsAppPopup />
     </>
   );
 }
