@@ -27,13 +27,13 @@ export function Hero() {
   return (
     <section
       id="home"
-      className="relative flex min-h-screen items-center overflow-hidden pt-24 sm:pt-28"
+      className="relative flex min-h-screen items-start overflow-hidden pt-20 sm:pt-24 lg:items-center lg:pt-28"
     >
       <GridBackground />
       <Particles count={70} />
 
-      <div className="container relative z-10 grid items-center gap-8 py-10 sm:gap-12 sm:py-16 lg:grid-cols-[1.15fr_0.85fr]">
-        <motion.div variants={container} initial="hidden" animate="show">
+      <div className="container relative z-10 grid items-center gap-6 py-6 sm:gap-10 sm:py-12 lg:grid-cols-[1.15fr_0.85fr] lg:gap-12 lg:py-16">
+        <motion.div variants={container} initial="hidden" animate="show" className="order-2 lg:order-1">
           <motion.div variants={item} className="eyebrow mb-6">
             <Sparkles size={13} className="text-primary" />
             Available for new projects
@@ -71,25 +71,25 @@ export function Hero() {
           initial={{ opacity: 0, scale: 0.92 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.9, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
-          className="relative mx-auto w-full max-w-[260px] sm:max-w-sm"
+          className="order-1 lg:order-2 relative mx-auto w-full max-w-[200px] sm:max-w-xs lg:max-w-sm"
         >
           <div className="absolute inset-0 -z-10 animate-spin-slow rounded-[2.5rem] bg-gradient-to-tr from-primary/40 via-transparent to-secondary/40 blur-2xl" />
           <div className="glass overflow-hidden rounded-[2rem] p-2 shadow-cinematic">
-            <div className="relative aspect-[4/5] overflow-hidden rounded-[1.5rem]">
+            <div className="relative aspect-square sm:aspect-[4/5] overflow-hidden rounded-[1.5rem]">
               <Image
                 src="/profile%20image.jpg"
                 alt="Md Mizanur Rahman"
                 fill
                 priority
-                sizes="(max-width: 1024px) 90vw, 380px"
+                sizes="(max-width: 640px) 200px, (max-width: 1024px) 320px, 380px"
                 className="object-cover object-top"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-bg via-transparent to-transparent" />
             </div>
           </div>
-          <div className="glass absolute -bottom-5 -left-5 rounded-2xl px-4 py-3 shadow-glow">
-            <p className="font-display text-2xl font-bold text-primary">1000+</p>
-            <p className="text-xs text-muted">Videos ranked #1</p>
+          <div className="glass absolute -bottom-4 -left-4 rounded-xl px-3 py-2 shadow-glow sm:-bottom-5 sm:-left-5 sm:rounded-2xl sm:px-4 sm:py-3">
+            <p className="font-display text-lg font-bold text-primary sm:text-2xl">1000+</p>
+            <p className="text-[10px] text-muted sm:text-xs">Videos ranked #1</p>
           </div>
         </motion.div>
       </div>

@@ -27,10 +27,10 @@ export function Footer() {
           <div className="shrink-0">
             <button
               onClick={() => go("home")}
-              className="flex items-center gap-2 font-display text-lg font-bold"
+              className="flex flex-col items-center gap-2 font-display text-lg font-bold md:flex-row md:gap-2"
             >
-              <span className="grid h-8 w-8 place-items-center overflow-hidden rounded-full bg-primary">
-                <Image src="/logo.png" alt="Mizanur Logo" width={32} height={32} className="object-cover" />
+              <span className="grid h-11 w-11 place-items-center overflow-hidden rounded-full bg-primary md:h-8 md:w-8">
+                <Image src="/logo.png" alt="Mizanur Logo" width={44} height={44} className="object-cover" />
               </span>
               {site.name}
             </button>
