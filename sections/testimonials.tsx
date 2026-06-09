@@ -22,7 +22,7 @@ function Stars({ n }: { n: number }) {
 
 export function Testimonials() {
   return (
-    <section id="testimonials" className="relative overflow-hidden py-28 sm:py-36">
+    <section id="testimonials" className="relative overflow-hidden py-16 sm:py-24 lg:py-32">
       <div className="container">
         <SectionHeading
           eyebrow="Client words"

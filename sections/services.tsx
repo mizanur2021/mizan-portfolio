@@ -10,7 +10,7 @@ export function Services() {
     document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" });
 
   return (
-    <section id="services" className="relative py-28 sm:py-36">
+    <section id="services" className="relative py-16 sm:py-24 lg:py-32">
       <div className="container">
         <SectionHeading
           eyebrow="Services"

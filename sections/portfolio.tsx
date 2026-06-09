@@ -17,7 +17,7 @@ export function Portfolio() {
     filter === "All" ? projects : projects.filter((p) => p.category === filter);
 
   return (
-    <section id="work" className="relative py-28 sm:py-36">
+    <section id="work" className="relative py-16 sm:py-24 lg:py-32">
       <div className="container">
         <SectionHeading
           eyebrow="Selected work"

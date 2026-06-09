@@ -27,12 +27,12 @@ export function Hero() {
   return (
     <section
       id="home"
-      className="relative flex min-h-screen items-center overflow-hidden pt-28"
+      className="relative flex min-h-screen items-center overflow-hidden pt-24 sm:pt-28"
     >
       <GridBackground />
       <Particles count={70} />
 
-      <div className="container relative z-10 grid items-center gap-12 py-16 lg:grid-cols-[1.15fr_0.85fr]">
+      <div className="container relative z-10 grid items-center gap-8 py-10 sm:gap-12 sm:py-16 lg:grid-cols-[1.15fr_0.85fr]">
         <motion.div variants={container} initial="hidden" animate="show">
           <motion.div variants={item} className="eyebrow mb-6">
             <Sparkles size={13} className="text-primary" />
@@ -41,7 +41,7 @@ export function Hero() {
 
           <motion.h1
             variants={item}
-            className="font-display text-4xl font-bold leading-[1.05] tracking-tightest sm:text-6xl lg:text-[4.25rem]"
+            className="font-display text-3xl font-bold leading-[1.08] tracking-tightest sm:text-5xl lg:text-[4.25rem]"
           >
             Helping brands & creators grow through{" "}
             <span className="text-gradient glow-text">data-driven</span> digital
@@ -71,7 +71,7 @@ export function Hero() {
           initial={{ opacity: 0, scale: 0.92 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.9, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
-          className="relative mx-auto w-full max-w-sm"
+          className="relative mx-auto w-full max-w-[260px] sm:max-w-sm"
         >
           <div className="absolute inset-0 -z-10 animate-spin-slow rounded-[2.5rem] bg-gradient-to-tr from-primary/40 via-transparent to-secondary/40 blur-2xl" />
           <div className="glass overflow-hidden rounded-[2rem] p-2 shadow-cinematic">
@@ -88,8 +88,8 @@ export function Hero() {
             </div>
           </div>
           <div className="glass absolute -bottom-5 -left-5 rounded-2xl px-4 py-3 shadow-glow">
-            <p className="font-display text-2xl font-bold text-primary">300+</p>
-            <p className="text-xs text-muted">Projects shipped</p>
+            <p className="font-display text-2xl font-bold text-primary">1000+</p>
+            <p className="text-xs text-muted">Videos ranked #1</p>
           </div>
         </motion.div>
       </div>

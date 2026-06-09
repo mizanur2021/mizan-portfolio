@@ -64,7 +64,7 @@ function SkillCard({
 
 export function Skills() {
   return (
-    <section id="skills" className="relative py-28 sm:py-36">
+    <section id="skills" className="relative py-16 sm:py-24 lg:py-32">
       <div className="container">
         <SectionHeading
           eyebrow="What I do best"
