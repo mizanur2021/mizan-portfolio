@@ -18,6 +18,8 @@ export const site = {
   description:
     "Social Media Manager & Digital Marketer specializing in Social Media Marketing, YouTube SEO, Shopify store design, and Meta & Google Ads — turning attention into measurable growth. 5+ years, 300+ projects, 100+ clients.",
   ogImage: "/og.png",
+  /** Google Analytics 4 (gtag.js) measurement ID. */
+  googleAnalyticsId: "G-36W496FF17",
   socials: {
     youtube: "https://www.youtube.com/@mizansherpur",
     linkedin: "https://www.linkedin.com/in/dmmizanur05",
