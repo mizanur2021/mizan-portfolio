@@ -20,7 +20,7 @@ export function About() {
                 <span className="text-gradient">measurable growth</span>
               </>
             }
-            subtitle="I'm Md Mizanur Rahman — a result-oriented Digital Marketing Specialist with 5+ years of proven experience in YouTube SEO, Facebook Ads, Shopify, and content strategy. Ranked 1000+ videos to YouTube's first page, helped 200+ creators grow, and achieved 4x–5x ROAS for e-commerce clients."
+            subtitle="I'm Md Mizanur Rahman (Freelancer Mizan) — a result-oriented Social Media Manager & Digital Marketer based in Sherpur, Bangladesh, with 5+ years of proven experience in Social Media Marketing, YouTube SEO, Facebook Ads, Shopify, and content strategy. Ranked 1000+ videos to YouTube's first page, helped 200+ creators grow, and achieved 4x–5x ROAS for e-commerce clients worldwide."
           />
 
           <div className="space-y-5">
@@ -36,11 +36,12 @@ export function About() {
             </Reveal>
             <Reveal index={1}>
               <p className="leading-relaxed text-muted">
-                Today I work remotely with clients in the USA, Denmark, UAE, and
-                Bangladesh — executing strategy, managing ad spend, and
-                delivering clear reporting across every channel I touch. Every
-                decision is backed by data and built to move the numbers that
-                matter.
+                Based in Sherpur, Mymensingh, I work remotely with clients in
+                the USA, Denmark, UAE, and Bangladesh as a freelance Social
+                Media Marketer and digital growth specialist — executing
+                strategy, managing ad spend, and delivering clear reporting
+                across every channel I touch. Every decision is backed by data
+                and built to move the numbers that matter.
               </p>
             </Reveal>
           </div>

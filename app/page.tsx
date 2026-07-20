@@ -1,8 +1,10 @@
+import { PageShell } from "@/components/shared/page-shell";
 import { Navbar } from "@/components/navbar";
 import { Hero } from "@/sections/hero";
 import { About } from "@/sections/about";
 import { Skills } from "@/sections/skills";
 import { Services } from "@/sections/services";
+import { Pricing } from "@/sections/pricing";
 import { Portfolio } from "@/sections/portfolio";
 import { Testimonials } from "@/sections/testimonials";
 import { Resume } from "@/sections/resume";
@@ -13,13 +15,14 @@ import { WhatsAppPopup } from "@/components/shared/whatsapp-popup";
 
 export default function Home() {
   return (
-    <>
+    <PageShell>
       <Navbar />
       <main className="relative z-10">
         <Hero />
         <About />
         <Skills />
         <Services />
+        <Pricing />
         <Portfolio />
         <Testimonials />
         <Resume />
@@ -28,6 +31,6 @@ export default function Home() {
       </main>
       <Footer />
       <WhatsAppPopup />
-    </>
+    </PageShell>
   );
 }

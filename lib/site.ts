@@ -1,13 +1,22 @@
 /** Single source of truth for brand + contact details used across SEO + UI. */
 export const site = {
   name: "Md Mizanur Rahman",
-  role: "Digital Marketing Specialist",
-  url: "https://mizanurrahman.com", // replace with your live domain
+  role: "Social Media Manager & Digital Marketer",
+  /** Primary canonical domain — all metadata, schema, sitemap & OG tags derive from this. */
+  url: "https://www.freelancermizan.com",
+  /**
+   * Legacy domain(s) being migrated away from. Kept only for 301 redirects
+   * (see next.config.ts) and `sameAs` entity-consolidation in JSON-LD.
+   * Do NOT remove until GSC "Change of Address" migration is fully settled
+   * (Search Console confirms the move, ~weeks to months).
+   */
+  legacyUrls: ["https://dmmizan.vercel.app"],
   email: "freeelancermizan@gmail.com",
   whatsapp: "+8801891892324",
   location: "Sherpur, Mymensingh, Bangladesh",
+  googleMaps: "https://maps.app.goo.gl/81JEoxdAdr31sms87",
   description:
-    "YouTube Video SEO, Meta & Google Ads, and Shopify store design that turns attention into measurable growth. 5+ years, 300+ projects, 100+ clients.",
+    "Social Media Manager & Digital Marketer specializing in Social Media Marketing, YouTube SEO, Shopify store design, and Meta & Google Ads — turning attention into measurable growth. 5+ years, 300+ projects, 100+ clients.",
   ogImage: "/og.png",
   socials: {
     youtube: "https://www.youtube.com/@mizansherpur",

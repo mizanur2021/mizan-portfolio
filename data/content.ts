@@ -1,4 +1,6 @@
+import { createElement, type ReactNode } from "react";
 import {
+  type IconBaseProps,
   type IconType,
 } from "react-icons";
 import {
@@ -9,8 +11,9 @@ import {
   SiCanva,
   SiOpenai,
   SiGoogle,
+  SiClaude,
 } from "react-icons/si";
-import { Search, BarChart3, Megaphone, Sparkles, Award, GraduationCap, BookOpen } from "lucide-react";
+import { Search, BarChart3, Megaphone, Sparkles, Award, GraduationCap, BookOpen, Brain } from "lucide-react";
 
 /* ------------------------------------------------------------------ */
 /* Navigation                                                          */
@@ -20,6 +23,7 @@ export const navLinks = [
   { id: "about", label: "About" },
   { id: "skills", label: "Skills" },
   { id: "services", label: "Services" },
+  { id: "pricing", label: "Pricing" },
   { id: "work", label: "Work" },
   { id: "testimonials", label: "Clients" },
   { id: "resume", label: "Resume" },
@@ -57,6 +61,7 @@ export const skills = [
   { name: "Keyword Research", level: 95, blurb: "Intent-mapped opportunity finding." },
   { name: "Social Media Marketing", level: 91, blurb: "Organic growth systems." },
   { name: "Canva Design", level: 89, blurb: "Scroll-stopping creative." },
+  { name: "Claude AI", level: 87, blurb: "AI-powered content, strategy & web builds." },
 ] as const;
 
 /* ------------------------------------------------------------------ */
@@ -66,12 +71,13 @@ export type Tool = { name: string; icon?: IconType; mark?: string; color: string
 
 export const tools: Tool[] = [
   { name: "VidIQ", mark: "vidIQ", color: "#F5476A" },
-  { name: "TubeBuddy", mark: "TB", color: "#5DA5E8" },
+  { name: "TubeBuddy", icon: SiTubebuddy, color: "#5DA5E8" },
+  { name: "Claude AI", icon: SiClaude, color: "#CC785C" },
   { name: "ChatGPT", icon: SiOpenai, color: "#10A37F" },
   { name: "Canva", icon: SiCanva, color: "#00C4CC" },
   { name: "Shopify", icon: SiShopify, color: "#95BF47" },
   { name: "Google Ads", icon: SiGoogleads, color: "#4285F4" },
-  { name: "KeywordTool.io", mark: "KW", color: "#00FF88" },
+  { name: "KeywordTool.io", icon: SiKeywordtool, color: "#00FF88" },
   { name: "YouTube", icon: SiYoutube, color: "#FF0000" },
 ];
 
@@ -119,6 +125,11 @@ export const services: Service[] = [
     title: "Video SEO Audit",
     icon: Search,
     desc: "A deep teardown of your channel with a prioritized roadmap to more views.",
+  },
+  {
+    title: "AI-Powered Website & Content",
+    icon: Sparkles,
+    desc: "Claude AI-driven website builds, SEO content creation, and marketing copy that deploys in days, not weeks.",
   },
 ];
 
@@ -267,16 +278,15 @@ export const projects: Project[] = [
   },
   {
     id: "surgeon-kibria",
-    title: "Surgeon SMG Kibria — Facebook Page",
+    title: "Prof. Dr SMG Kibria — Facebook Page",
     category: "Social Media",
     cover: "/portfolio/dr-kibria.jpg",
     images: [
       "/portfolio/dr-kibria.jpg",
       "/portfolio/dr-kibria-dashboard.jpg",
-      "https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?auto=format&fit=crop&w=1200&q=80",
     ],
     description:
-      "Full Facebook page management for Surgeon SMG Kibria — content creation, post scheduling, community engagement, and audience growth strategy to build trust and visibility for a medical professional.",
+      "Full Facebook page management for Professor Dr SMG Kibria — renowned Vascular & Laparoscopic Surgeon and Fellow of the Royal College of Surgeons (UK). Delivered strategic content creation, post scheduling, community engagement, and audience growth to build authority and trust for a leading medical professional.",
     result: "3x reach & 4x engagement",
     tags: ["Facebook", "Content Strategy", "Healthcare", "Community Management"],
     metrics: [
@@ -335,6 +345,12 @@ export const certificates: Certificate[] = [
     name: "Social Media Marketing",
     issuer: "Certified",
     image: "/certificate/social-media-marketing.jpg",
+  },
+  {
+    id: "digital-marketing-freelancing",
+    name: "Digital Marketing for Freelancing, Level-3",
+    issuer: "Certified",
+    image: "/certificate/digital-marketing-freelancing-level-3.jpg",
   },
   {
     id: "computer-office",
@@ -448,8 +464,10 @@ export const timeline = [
 
 export const certifications = [
   { title: "Foundations of Digital Marketing & E-Commerce — Google", icon: Award },
+  { title: "Digital Marketing for Freelancing, Level-3", icon: Award },
   { title: "SEO Specialization — University of California, Davis (Coursera)", icon: GraduationCap },
   { title: "Social Media Marketing — Northwestern University (Coursera)", icon: GraduationCap },
+  { title: "AI-Powered Marketing with Claude AI", icon: Brain },
   { title: "Advanced Social Media Marketing — Udemy", icon: BookOpen },
 ] as const;
 
@@ -458,3 +476,90 @@ export const achievements = [
   { icon: Sparkles, text: "Level 1 Fiverr Seller with 50+ five-star reviews and 80% repeat client rate" },
   { icon: Megaphone, text: "Remote clients served across the USA, Denmark, UAE, and Bangladesh" },
 ] as const;
+
+function SiKeywordtool(props: IconBaseProps): ReactNode {
+  const { title, color = "currentColor", size = 24, ...rest } = props;
+
+  return createElement(
+    "svg",
+    {
+      ...rest,
+      xmlns: "http://www.w3.org/2000/svg",
+      width: size,
+      height: size,
+      viewBox: "0 0 24 24",
+      fill: "none",
+      stroke: color,
+      strokeWidth: 2,
+      strokeLinecap: "round",
+      strokeLinejoin: "round",
+      role: title ? "img" : undefined,
+      "aria-label": title,
+      focusable: "false",
+    },
+    [
+      createElement("path", {
+        key: "search",
+        d: "M11 4a7 7 0 1 0 0 14 7 7 0 0 0 0-14Z",
+      }),
+      createElement("path", {
+        key: "handle",
+        d: "m20 20-4.2-4.2",
+      }),
+      createElement("path", {
+        key: "bar1",
+        d: "M8 8h6",
+      }),
+      createElement("path", {
+        key: "bar2",
+        d: "M8 11h4",
+      }),
+    ],
+  );
+}
+
+function SiTubebuddy(props: IconBaseProps): ReactNode {
+  const { title, color = "currentColor", size = 24, ...rest } = props;
+
+  return createElement(
+    "svg",
+    {
+      ...rest,
+      xmlns: "http://www.w3.org/2000/svg",
+      width: size,
+      height: size,
+      viewBox: "0 0 24 24",
+      fill: "none",
+      stroke: color,
+      strokeWidth: 2,
+      strokeLinecap: "round",
+      strokeLinejoin: "round",
+      role: title ? "img" : undefined,
+      "aria-label": title,
+      focusable: "false",
+    },
+    [
+      createElement("path", {
+        key: "badge",
+        d: "M5 7a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2Z",
+      }),
+      createElement("path", {
+        key: "bar",
+        d: "M8.5 8.5v7",
+      }),
+      createElement("path", {
+        key: "top",
+        d: "M8.5 8.5h7",
+      }),
+      createElement("path", {
+        key: "bottom",
+        d: "M8.5 15.5h5",
+      }),
+      createElement("path", {
+        key: "play",
+        d: "M15.5 12.5 13 14.3V10.7Z",
+      }),
+    ],
+  );
+}
+

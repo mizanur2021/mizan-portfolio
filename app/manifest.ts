@@ -4,12 +4,16 @@ import { site } from "@/lib/site";
 export default function manifest(): MetadataRoute.Manifest {
   return {
     name: site.name,
-    short_name: "Mizan",
+    short_name: "Mizan DM",
     description: site.description,
     start_url: "/",
     display: "standalone",
     background_color: "#050505",
     theme_color: "#050505",
-    icons: [{ src: "/icon.png", sizes: "512x512", type: "image/png" }],
+    lang: "en",
+    categories: ["business", "productivity"],
+    icons: [
+      { src: "/logo.png", sizes: "512x512", type: "image/png", purpose: "maskable" },
+    ],
   };
 }

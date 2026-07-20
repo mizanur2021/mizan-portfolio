@@ -19,7 +19,7 @@ export function Certificates() {
           subtitle="Professionally trained and certified across digital marketing disciplines."
         />
 
-        <div className="mt-12 grid grid-cols-2 gap-4 sm:gap-5 lg:grid-cols-4">
+        <div className="mt-12 grid grid-cols-2 gap-4 sm:gap-5 sm:grid-cols-3 lg:grid-cols-5">
           {certificates.map((cert, i) => (
             <motion.div
               key={cert.id}
@@ -37,7 +37,7 @@ export function Certificates() {
                       src={cert.image}
                       alt={cert.name}
                       fill
-                      sizes="(max-width:640px) 50vw, (max-width:1024px) 33vw, 25vw"
+                      sizes="(max-width:640px) 50vw, (max-width:1024px) 33vw, 20vw"
                       className="object-contain transition-transform duration-700 group-hover:scale-[1.03]"
                     />
                     {/* shimmer overlay on hover */}

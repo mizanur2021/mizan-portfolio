@@ -72,9 +72,10 @@ export function Hero() {
             variants={item}
             className="font-display text-3xl font-bold leading-[1.08] tracking-tightest sm:text-5xl lg:text-[4.25rem]"
           >
-            Helping brands & creators grow through{" "}
-            <span className="text-gradient glow-text">data-driven</span> digital
-            marketing
+            <span className="text-gradient glow-text">
+              Social Media Manager & Digital Marketer
+            </span>{" "}
+            helping brands & creators grow
           </motion.h1>
 
           <motion.p
