@@ -7,12 +7,16 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 /**
  * Boots Lenis smooth scroll and syncs it with GSAP ScrollTrigger.
- * Automatically disabled when the user prefers reduced motion.
+ * Automatically disabled when the user prefers reduced motion, and on
+ * coarse-pointer (touch) devices — native touch scrolling is already
+ * smooth, and Lenis's RAF loop otherwise runs for the page's whole
+ * lifetime competing with the main thread during initial load.
  */
 export function useLenis() {
   useEffect(() => {
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduce) return;
+    const coarse = window.matchMedia("(pointer: coarse)").matches;
+    if (reduce || coarse) return;
 
     gsap.registerPlugin(ScrollTrigger);
 

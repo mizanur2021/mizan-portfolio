@@ -20,8 +20,12 @@ export function Hero() {
     show: { transition: { staggerChildren: 0.12, delayChildren: 0.1 } },
   };
   const item = {
-    hidden: { opacity: 0, y: 24 },
-    show: { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] } },
+    // No opacity:0 in the hidden state — the H1 here is the LCP element,
+    // and Lighthouse/CrUX can't count transparent text as "painted", which
+    // was inflating LCP by ~2s (measured via lcp-breakdown-insight). The
+    // slide-up alone still reads as a clean entrance.
+    hidden: { y: 24 },
+    show: { y: 0, transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] } },
   };
 
   return (
