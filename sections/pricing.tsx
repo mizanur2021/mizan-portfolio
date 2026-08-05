@@ -160,10 +160,10 @@ export function Pricing() {
               viewport={{ once: true, margin: "-40px" }}
               transition={{ delay: i * 0.07, duration: 0.5 }}
               className={cn(
-                "relative flex flex-col overflow-hidden rounded-2xl border bg-card/80 backdrop-blur-xl",
+                "group relative flex flex-col overflow-hidden rounded-2xl border bg-card/80 backdrop-blur-xl transition-all duration-300 hover:-translate-y-1.5",
                 plan.popular
-                  ? "border-primary/50 shadow-[0_0_40px_-8px_hsl(var(--primary)/0.35)]"
-                  : "border-line"
+                  ? "border-primary/50 shadow-2xl shadow-primary/25 hover:shadow-primary/40"
+                  : "border-line hover:border-primary/40 hover:shadow-xl hover:shadow-primary/10"
               )}
             >
               {/* popular badge */}
@@ -186,10 +186,10 @@ export function Pricing() {
                 {/* icon */}
                 <div
                   className={cn(
-                    "grid h-12 w-12 place-items-center rounded-xl border text-primary",
+                    "grid h-12 w-12 place-items-center rounded-xl border text-primary transition-transform duration-300 group-hover:scale-110",
                     plan.popular
                       ? "border-primary/40 bg-primary/10"
-                      : "border-line bg-white/[0.03]"
+                      : "border-line bg-white/[0.03] group-hover:border-primary/40"
                   )}
                 >
                   {plan.icon}

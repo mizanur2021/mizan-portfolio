@@ -325,6 +325,8 @@ export type Certificate = {
   name: string;
   issuer: string;
   image: string;
+  /** optional back-side scan — shown as a second page in the lightbox (e.g. ID cards) */
+  backImage?: string;
 };
 
 export const certificates: Certificate[] = [
@@ -357,6 +359,13 @@ export const certificates: Certificate[] = [
     name: "Basic Computer & Office Application (360H)",
     issuer: "Technical Training Institute",
     image: "/certificate/basic-computer-office.jpg",
+  },
+  {
+    id: "freelancer-id-card",
+    name: "Government Verified Freelancer ID Card",
+    issuer: "Government of Bangladesh",
+    image: "/certificate/freelancer-id-front.jpg",
+    backImage: "/certificate/freelancer-id-back.jpg",
   },
 ];
 

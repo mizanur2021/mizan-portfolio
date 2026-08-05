@@ -17,7 +17,6 @@ export const site = {
   googleMaps: "https://maps.app.goo.gl/81JEoxdAdr31sms87",
   description:
     "Social Media Manager & Digital Marketer specializing in Social Media Marketing, YouTube SEO, Shopify store design, and Meta & Google Ads — turning attention into measurable growth. 5+ years, 300+ projects, 100+ clients.",
-  ogImage: "/og.png",
   /** Google Analytics 4 (gtag.js) measurement ID. */
   googleAnalyticsId: "G-5M1R1QDZNZ",
   socials: {

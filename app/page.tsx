@@ -12,8 +12,11 @@ import { Certificates } from "@/sections/certificates";
 import { Contact } from "@/sections/contact";
 import { Footer } from "@/sections/footer";
 import { WhatsAppPopup } from "@/components/shared/whatsapp-popup";
+import { getPortfolioProjects } from "@/lib/get-portfolio-data";
 
-export default function Home() {
+export default async function Home() {
+  const projects = await getPortfolioProjects();
+
   return (
     <PageShell>
       <Navbar />
@@ -23,7 +26,7 @@ export default function Home() {
         <Skills />
         <Services />
         <Pricing />
-        <Portfolio />
+        <Portfolio projects={projects} />
         <Testimonials />
         <Resume />
         <Certificates />

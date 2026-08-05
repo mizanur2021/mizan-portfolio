@@ -5,6 +5,7 @@ import { Star } from "lucide-react";
 import { testimonials } from "@/data/content";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { Marquee } from "@/components/shared/marquee";
+import { Reveal } from "@/components/ui/reveal";
 
 function Stars({ n }: { n: number }) {
   return (
@@ -35,7 +36,7 @@ export function Testimonials() {
         />
       </div>
 
-      <div className="relative mt-14">
+      <Reveal className="relative mt-14">
         {/* edge fades */}
         <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-24 bg-gradient-to-r from-bg to-transparent" />
         <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-24 bg-gradient-to-l from-bg to-transparent" />
@@ -44,7 +45,7 @@ export function Testimonials() {
           {testimonials.map((t) => (
             <figure
               key={t.name}
-              className="glass flex w-[340px] shrink-0 flex-col gap-4 rounded-2xl p-6"
+              className="glass flex w-[340px] shrink-0 flex-col gap-4 rounded-2xl p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-glow hover:ring-1 hover:ring-primary/30"
             >
               <Stars n={t.rating} />
               <blockquote className="text-sm leading-relaxed text-white/90">
@@ -66,7 +67,7 @@ export function Testimonials() {
             </figure>
           ))}
         </Marquee>
-      </div>
+      </Reveal>
     </section>
   );
 }

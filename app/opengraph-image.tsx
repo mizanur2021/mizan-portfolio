@@ -43,7 +43,8 @@ export default function Image() {
           width: 240,
           height: 290,
         }}>
-          <img src={profileSrc} width={240} height={290}
+          {/* eslint-disable-next-line @next/next/no-img-element -- next/image can't render inside ImageResponse's Satori engine */}
+          <img src={profileSrc} width={240} height={290} alt="Md Mizanur Rahman"
             style={{ objectFit: "cover", objectPosition: "top" }} />
         </div>
 
@@ -51,7 +52,8 @@ export default function Image() {
         <div style={{ display: "flex", flexDirection: "column", flex: 1, gap: 0 }}>
           {/* Logo + eyebrow */}
           <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 14 }}>
-            <img src={logoSrc} width={36} height={36}
+            {/* eslint-disable-next-line @next/next/no-img-element -- next/image can't render inside ImageResponse's Satori engine */}
+            <img src={logoSrc} width={36} height={36} alt=""
               style={{ borderRadius: 10, objectFit: "cover" }} />
             <span style={{ color: "#00FF88", fontSize: 14, fontWeight: 700,
               letterSpacing: "0.18em", textTransform: "uppercase" }}>

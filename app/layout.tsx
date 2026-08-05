@@ -13,6 +13,7 @@ import {
 } from "@/lib/jsonld";
 import { Providers } from "@/components/providers";
 import type { ReactNode } from "react";
+// @ts-ignore: CSS imports are handled by Next.js
 import "./globals.css";
 
 const inter = Inter({
@@ -99,9 +100,6 @@ export const metadata: Metadata = {
   category: "Digital Marketing",
   alternates: {
     canonical: site.url,
-    types: {
-      "application/rss+xml": `${site.url}/sitemap.xml`,
-    },
   },
   openGraph: {
     type: "website",
@@ -158,53 +156,29 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} ${interTight.variable}`}>
       <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://images.unsplash.com" />
+        <link rel="preconnect" href="https://i.pravatar.cc" />
+        {/* JSON-LD is server-rendered as plain <script> tags (not next/script)
+            so it's present in the raw HTML for crawlers and AI agents that
+            don't execute client JS — next/script's afterInteractive strategy
+            would strip it from the initial response entirely. */}
+        {[
+          websiteJsonLd(),
+          organizationJsonLd(),
+          personJsonLd(),
+          serviceJsonLd(),
+          faqJsonLd(),
+          localBusinessJsonLd(),
+          breadcrumbJsonLd(),
+        ].map((data, i) => (
+          <script
+            key={i}
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }}
+          />
+        ))}
       </head>
       <body className="noise">
-        <Script
-          id="ld-website"
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd()) }}
-          strategy="afterInteractive"
-        />
-        <Script
-          id="ld-organization"
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd()) }}
-          strategy="afterInteractive"
-        />
-        <Script
-          id="ld-person"
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd()) }}
-          strategy="afterInteractive"
-        />
-        <Script
-          id="ld-service"
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceJsonLd()) }}
-          strategy="afterInteractive"
-        />
-        <Script
-          id="ld-faq"
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd()) }}
-          strategy="afterInteractive"
-        />
-        <Script
-          id="ld-local"
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessJsonLd()) }}
-          strategy="afterInteractive"
-        />
-        <Script
-          id="ld-breadcrumb"
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd()) }}
-          strategy="afterInteractive"
-        />
         <Script
           src={`https://www.googletagmanager.com/gtag/js?id=${site.googleAnalyticsId}`}
           strategy="afterInteractive"

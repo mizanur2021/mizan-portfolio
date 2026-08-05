@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { skills, tools } from "@/data/content";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { Marquee } from "@/components/shared/marquee";
+import { Reveal } from "@/components/ui/reveal";
 
 function SkillCard({
   name,
@@ -84,7 +85,7 @@ export function Skills() {
       </div>
 
       {/* Tool Stack */}
-      <div className="mt-20">
+      <Reveal className="mt-20">
         <p className="container mb-8 text-center text-xs uppercase tracking-[0.25em] text-muted">
           Tools I work with daily
         </p>
@@ -92,7 +93,7 @@ export function Skills() {
           {tools.map((t) => (
             <div
               key={t.name}
-              className="glass flex shrink-0 items-center gap-3 rounded-full px-6 py-3"
+              className="glass flex shrink-0 items-center gap-3 rounded-full px-6 py-3 transition-all duration-300 hover:-translate-y-0.5 hover:ring-1 hover:ring-primary/30"
             >
               {t.icon ? (
                 <t.icon size={22} style={{ color: t.color }} />
@@ -110,7 +111,7 @@ export function Skills() {
             </div>
           ))}
         </Marquee>
-      </div>
+      </Reveal>
     </section>
   );
 }

@@ -7,7 +7,9 @@ import { FaYoutube, FaFacebookF, FaInstagram } from "react-icons/fa6";
 import { SiGoogleads } from "react-icons/si";
 import { TrendingUp } from "lucide-react";
 
-const TOTAL_MS = 4000;
+const TOTAL_MS = 1600;
+const EXIT_MS = 400;
+const SEEN_KEY = "mizan-intro-seen";
 
 const stats = [
   { Icon: FaYoutube,    color: "#FF0000", label: "YouTube Views",     end: 28400000, suffix: "" },
@@ -44,13 +46,13 @@ function fmt(n: number) {
 function StatCard({
   Icon, color, label, end, delay,
 }: { Icon: React.ComponentType<{ size?: number; color?: string }>; color: string; label: string; end: number; delay: number }) {
-  const val = useFastCount(end, delay, TOTAL_MS - delay - 600);
+  const val = useFastCount(end, delay, TOTAL_MS - delay - 250);
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 20, scale: 0.9 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
-      transition={{ delay: delay / 1000 + 0.4, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+      transition={{ delay: delay / 1000, duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
       className="glass flex flex-col items-center gap-2 rounded-2xl px-5 py-4"
     >
       <Icon size={20} color={color} />
@@ -74,10 +76,13 @@ export function Loader({ onDone }: { onDone: () => void }) {
   const [exiting, setExiting] = useState(false);
 
   useEffect(() => {
+    const alreadySeen = sessionStorage.getItem(SEEN_KEY) === "1";
+    sessionStorage.setItem(SEEN_KEY, "1");
+
     const t = setTimeout(() => {
       setExiting(true);
-      setTimeout(onDone, 700);
-    }, TOTAL_MS);
+      setTimeout(onDone, EXIT_MS);
+    }, alreadySeen ? 0 : TOTAL_MS);
     return () => clearTimeout(t);
   }, [onDone]);
 
@@ -88,7 +93,7 @@ export function Loader({ onDone }: { onDone: () => void }) {
           key="loader"
           initial={{ opacity: 1 }}
           exit={{ opacity: 0, scale: 1.04 }}
-          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: EXIT_MS / 1000, ease: [0.22, 1, 0.36, 1] }}
           className="fixed inset-0 z-[9999] flex flex-col items-center justify-center overflow-hidden bg-bg"
         >
           {/* background radial glow */}
@@ -100,7 +105,7 @@ export function Loader({ onDone }: { onDone: () => void }) {
           <motion.div
             initial={{ scale: 0.4, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
-            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
             className="mb-2 grid h-16 w-16 place-items-center overflow-hidden rounded-2xl bg-primary shadow-glow"
           >
             <Image src="/logo.png" alt="Mizan" width={64} height={64} className="object-cover" priority />
@@ -109,7 +114,7 @@ export function Loader({ onDone }: { onDone: () => void }) {
           <motion.p
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4, duration: 0.5 }}
+            transition={{ delay: 0.15, duration: 0.35 }}
             className="font-display text-xl font-bold sm:text-2xl"
           >
             Freelancer Mizan
@@ -117,7 +122,7 @@ export function Loader({ onDone }: { onDone: () => void }) {
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 0.6 }}
+            transition={{ delay: 0.28 }}
             className="mt-1 text-sm text-muted"
           >
             Best Digital Marketer · Sherpur, Bangladesh
@@ -126,7 +131,7 @@ export function Loader({ onDone }: { onDone: () => void }) {
           {/* Social growth stats */}
           <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
             {stats.map((s, i) => (
-              <StatCard key={s.label} {...s} delay={500 + i * 150} />
+              <StatCard key={s.label} {...s} delay={300 + i * 90} />
             ))}
           </div>
 
@@ -134,7 +139,7 @@ export function Loader({ onDone }: { onDone: () => void }) {
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 1.2 }}
+            transition={{ delay: 0.85 }}
             className="mt-6 text-xs text-muted"
           >
             Total reach generated for clients — and counting ↑

@@ -1,7 +1,8 @@
 "use client";
 
+import { useRef } from "react";
 import Image from "next/image";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import { ArrowDown, Sparkles } from "lucide-react";
 import { roles } from "@/data/content";
 import { Button } from "@/components/ui/button";
@@ -11,6 +12,14 @@ import { useTyping } from "@/hooks/use-typing";
 
 export function Hero() {
   const typed = useTyping(roles);
+  const sectionRef = useRef<HTMLElement>(null);
+  const reduceMotion = useReducedMotion();
+
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start start", "end start"],
+  });
+  const photoY = useTransform(scrollYProgress, [0, 1], [0, reduceMotion ? 0 : 70]);
 
   const go = (id: string) =>
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
@@ -30,6 +39,7 @@ export function Hero() {
 
   return (
     <section
+      ref={sectionRef}
       id="home"
       className="relative flex min-h-screen flex-col overflow-hidden pt-20 sm:pt-24 lg:flex-row lg:items-center lg:pt-28"
     >
@@ -43,6 +53,7 @@ export function Hero() {
           initial={{ opacity: 0, scale: 0.92 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.9, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+          style={{ y: photoY }}
           className="relative mx-auto w-full max-w-[180px] sm:max-w-[240px] lg:order-2 lg:max-w-sm"
         >
           <div className="absolute inset-0 -z-10 animate-spin-slow rounded-[2.5rem] bg-gradient-to-tr from-primary/40 via-transparent to-secondary/40 blur-2xl" />
@@ -108,7 +119,7 @@ export function Hero() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1.4 }}
-        className="absolute bottom-6 left-1/2 z-10 flex -translate-x-1/2 flex-col items-center gap-2 text-xs uppercase tracking-[0.2em] text-muted sm:bottom-8"
+        className="absolute bottom-6 left-1/2 z-10 flex -translate-x-1/2 flex-col items-center gap-2 text-xs uppercase tracking-[0.2em] text-muted transition-colors duration-200 hover:text-primary sm:bottom-8"
       >
         Scroll
         <ArrowDown size={16} className="animate-bounce text-primary" />

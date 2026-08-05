@@ -287,8 +287,12 @@ export function breadcrumbJsonLd() {
   const crumbs = [
     { name: "Home", url: site.url },
     { name: "About", url: `${site.url}/#about` },
+    { name: "Skills", url: `${site.url}/#skills` },
     { name: "Services", url: `${site.url}/#services` },
+    { name: "Pricing", url: `${site.url}/#pricing` },
     { name: "Work", url: `${site.url}/#work` },
+    { name: "Testimonials", url: `${site.url}/#testimonials` },
+    { name: "Resume", url: `${site.url}/#resume` },
     { name: "Certificates", url: `${site.url}/#certificates` },
     { name: "Contact", url: `${site.url}/#contact` },
   ];
@@ -340,10 +344,13 @@ export function localBusinessJsonLd() {
     priceRange: "$$",
     openingHours: "Mo-Fr 09:00-18:00",
     sameAs: [
-      site.googleMaps,
-      site.socials.facebook,
-      site.socials.linkedin,
+      ...site.legacyUrls,
       site.socials.youtube,
+      site.socials.linkedin,
+      site.socials.facebook,
+      site.socials.instagram,
+      site.socials.x,
+      site.googleMaps,
     ],
   };
 }

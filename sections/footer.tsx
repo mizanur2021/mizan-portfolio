@@ -25,10 +25,6 @@ export function Footer() {
     { Icon: Map, text: "Find me on Google Maps", href: site.googleMaps },
   ];
 
-  const halfLen = Math.ceil(navLinks.length / 2);
-  const navCol1 = navLinks.slice(0, halfLen);
-  const navCol2 = navLinks.slice(halfLen);
-
   return (
     <footer className="relative border-t border-line">
       <div className="hairline absolute inset-x-0 top-0" />
@@ -74,21 +70,12 @@ export function Footer() {
             <h3 className="mb-5 text-xs font-semibold uppercase tracking-widest text-muted">
               Quick Links
             </h3>
-            <div className="grid grid-cols-2 gap-x-10 gap-y-3">
-              {navCol1.map((l) => (
+            <div className="grid grid-cols-3 gap-x-5 gap-y-3 sm:gap-x-8 sm:gap-y-3.5">
+              {navLinks.map((l) => (
                 <button
                   key={l.id}
                   onClick={() => go(l.id)}
-                  className="text-left text-sm text-muted transition-colors hover:text-primary"
-                >
-                  {l.label}
-                </button>
-              ))}
-              {navCol2.map((l) => (
-                <button
-                  key={l.id}
-                  onClick={() => go(l.id)}
-                  className="text-left text-sm text-muted transition-colors hover:text-primary"
+                  className="text-left text-sm text-muted transition-colors hover:text-primary active:text-primary"
                 >
                   {l.label}
                 </button>
