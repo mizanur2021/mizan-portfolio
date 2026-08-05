@@ -7,6 +7,17 @@ import { createProject, updateProject, deleteProject, getProject, getProjects } 
 import { destroySessionCookie } from "@/lib/auth";
 import { projects as staticProjects, type Project } from "@/data/content";
 
+/** Thrown for validation failures we want to show the admin verbatim (never leaks internals). */
+class ValidationError extends Error {}
+
+const ALLOWED_IMAGE_TYPES: Record<string, string> = {
+  "image/jpeg": "jpg",
+  "image/png": "png",
+  "image/webp": "webp",
+  "image/gif": "gif",
+};
+const MAX_IMAGE_BYTES = 8 * 1024 * 1024; // 8MB — SVG intentionally excluded (can carry embedded <script>)
+
 function slugify(input: string) {
   return input
     .toLowerCase()
@@ -15,10 +26,31 @@ function slugify(input: string) {
     .replace(/(^-|-$)/g, "");
 }
 
+function validateImageFile(file: File) {
+  const ext = ALLOWED_IMAGE_TYPES[file.type];
+  if (!ext) {
+    throw new ValidationError(`"${file.name}" isn't a supported image type. Use JPEG, PNG, WebP, or GIF.`);
+  }
+  if (file.size > MAX_IMAGE_BYTES) {
+    throw new ValidationError(`"${file.name}" is too large — max 8MB per image.`);
+  }
+  return ext;
+}
+
+/** Never trust the client-supplied filename for the storage path — random name + validated extension only. */
+function randomBlobName(ext: string) {
+  return `work/${Date.now()}-${Math.random().toString(36).slice(2, 10)}.${ext}`;
+}
+
+async function uploadImage(file: File): Promise<string> {
+  const ext = validateImageFile(file);
+  const blob = await put(randomBlobName(ext), file, { access: "public" });
+  return blob.url;
+}
+
 async function uploadIfFile(value: FormDataEntryValue | null): Promise<string | null> {
   if (value instanceof File && value.size > 0) {
-    const blob = await put(`work/${Date.now()}-${value.name}`, value, { access: "public" });
-    return blob.url;
+    return uploadImage(value);
   }
   return null;
 }
@@ -56,21 +88,24 @@ export async function saveProject(
 ): Promise<SaveProjectState> {
   const isEdit = formData.get("mode") === "edit";
   const existingId = formData.get("id") as string;
-  const title = (formData.get("title") as string) ?? "";
+  const title = ((formData.get("title") as string) ?? "").trim();
   const id = isEdit ? existingId : slugify(title);
 
   try {
+    if (!title) throw new ValidationError("Title is required.");
+    if (!id) throw new ValidationError("Couldn't generate a URL slug from that title — add some letters or numbers.");
+
     const existing = isEdit ? await getProject(id) : null;
+    if (isEdit && !existing) throw new ValidationError("That project no longer exists.");
 
     const uploadedCover = await uploadIfFile(formData.get("cover"));
     const cover = uploadedCover ?? existing?.cover ?? "";
+    if (!cover) throw new ValidationError("A cover image is required.");
 
     const galleryFiles = formData
       .getAll("images")
       .filter((f): f is File => f instanceof File && f.size > 0);
-    const uploadedGallery = await Promise.all(
-      galleryFiles.map((f) => put(`work/${Date.now()}-${f.name}`, f, { access: "public" }).then((b) => b.url))
-    );
+    const uploadedGallery = await Promise.all(galleryFiles.map(uploadImage));
     const keptExisting = formData.getAll("existing_images") as string[];
     const images = [...keptExisting, ...uploadedGallery];
 
@@ -78,8 +113,8 @@ export async function saveProject(
       id,
       title,
       category: formData.get("category") as Project["category"],
-      cover: cover || images[0] || "",
-      images: images.length ? images : cover ? [cover] : [],
+      cover,
+      images: images.length ? images : [cover],
       description: (formData.get("description") as string) ?? "",
       result: (formData.get("result") as string) ?? "",
       tags: parseTags(formData.get("tags")),
@@ -97,8 +132,16 @@ export async function saveProject(
     revalidatePath("/");
     revalidatePath(`/work/${id}`);
   } catch (err) {
+    if (err instanceof ValidationError) {
+      return { error: err.message };
+    }
+    if (!isEdit && (err as { code?: string })?.code === "23505") {
+      return { error: `A project with the URL "/work/${id}" already exists — try a different title.` };
+    }
+    // Never echo raw DB/Blob SDK error text back to the client — it can
+    // include connection details. Full detail goes to server logs only.
     console.error("[admin] saveProject failed:", err);
-    return { error: err instanceof Error ? err.message : "Unknown error while saving." };
+    return { error: "Something went wrong while saving. Please try again." };
   }
 
   redirect("/admin");
