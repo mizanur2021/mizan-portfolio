@@ -48,48 +48,59 @@ function parseMetrics(formData: FormData): Project["metrics"] {
   return metrics;
 }
 
-export async function saveProject(formData: FormData): Promise<void> {
+export type SaveProjectState = { error?: string } | undefined;
+
+export async function saveProject(
+  _prevState: SaveProjectState,
+  formData: FormData
+): Promise<SaveProjectState> {
   const isEdit = formData.get("mode") === "edit";
   const existingId = formData.get("id") as string;
   const title = (formData.get("title") as string) ?? "";
   const id = isEdit ? existingId : slugify(title);
 
-  const existing = isEdit ? await getProject(id) : null;
+  try {
+    const existing = isEdit ? await getProject(id) : null;
 
-  const uploadedCover = await uploadIfFile(formData.get("cover"));
-  const cover = uploadedCover ?? existing?.cover ?? "";
+    const uploadedCover = await uploadIfFile(formData.get("cover"));
+    const cover = uploadedCover ?? existing?.cover ?? "";
 
-  const galleryFiles = formData
-    .getAll("images")
-    .filter((f): f is File => f instanceof File && f.size > 0);
-  const uploadedGallery = await Promise.all(
-    galleryFiles.map((f) => put(`work/${Date.now()}-${f.name}`, f, { access: "public" }).then((b) => b.url))
-  );
-  const keptExisting = formData.getAll("existing_images") as string[];
-  const images = [...keptExisting, ...uploadedGallery];
+    const galleryFiles = formData
+      .getAll("images")
+      .filter((f): f is File => f instanceof File && f.size > 0);
+    const uploadedGallery = await Promise.all(
+      galleryFiles.map((f) => put(`work/${Date.now()}-${f.name}`, f, { access: "public" }).then((b) => b.url))
+    );
+    const keptExisting = formData.getAll("existing_images") as string[];
+    const images = [...keptExisting, ...uploadedGallery];
 
-  const project: Project = {
-    id,
-    title,
-    category: formData.get("category") as Project["category"],
-    cover: cover || images[0] || "",
-    images: images.length ? images : cover ? [cover] : [],
-    description: (formData.get("description") as string) ?? "",
-    result: (formData.get("result") as string) ?? "",
-    tags: parseTags(formData.get("tags")),
-    metrics: parseMetrics(formData),
-  };
+    const project: Project = {
+      id,
+      title,
+      category: formData.get("category") as Project["category"],
+      cover: cover || images[0] || "",
+      images: images.length ? images : cover ? [cover] : [],
+      description: (formData.get("description") as string) ?? "",
+      result: (formData.get("result") as string) ?? "",
+      tags: parseTags(formData.get("tags")),
+      metrics: parseMetrics(formData),
+    };
 
-  if (isEdit) {
-    await updateProject(id, project);
-  } else {
-    const all = await getProjects();
-    await createProject(project, all.length);
+    if (isEdit) {
+      await updateProject(id, project);
+    } else {
+      const all = await getProjects();
+      await createProject(project, all.length);
+    }
+
+    revalidatePath("/admin");
+    revalidatePath("/");
+    revalidatePath(`/work/${id}`);
+  } catch (err) {
+    console.error("[admin] saveProject failed:", err);
+    return { error: err instanceof Error ? err.message : "Unknown error while saving." };
   }
 
-  revalidatePath("/admin");
-  revalidatePath("/");
-  revalidatePath(`/work/${id}`);
   redirect("/admin");
 }
 

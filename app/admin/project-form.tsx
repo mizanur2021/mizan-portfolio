@@ -1,11 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useActionState, useState } from "react";
 import Image from "next/image";
 import { useFormStatus } from "react-dom";
 import { X } from "lucide-react";
 import type { Project } from "@/data/content";
-import { saveProject } from "./actions";
+import { saveProject, type SaveProjectState } from "./actions";
 import { Button } from "@/components/ui/button";
 
 const CATEGORIES: Project["category"][] = [
@@ -33,9 +33,10 @@ function SubmitButton() {
 export function ProjectForm({ project }: { project?: Project }) {
   const isEdit = Boolean(project);
   const [keepImages, setKeepImages] = useState<string[]>(project?.images ?? []);
+  const [state, formAction] = useActionState<SaveProjectState, FormData>(saveProject, undefined);
 
   return (
-    <form action={saveProject} className="space-y-6">
+    <form action={formAction} className="space-y-6">
       <input type="hidden" name="mode" value={isEdit ? "edit" : "create"} />
       {isEdit && <input type="hidden" name="id" value={project!.id} />}
 
@@ -163,6 +164,12 @@ export function ProjectForm({ project }: { project?: Project }) {
         )}
         <input id="images" type="file" name="images" accept="image/*" multiple className={fileInputClass} />
       </div>
+
+      {state?.error && (
+        <p className="rounded-lg border border-red-500/30 bg-red-500/10 px-3.5 py-2.5 text-sm text-red-400">
+          {state.error}
+        </p>
+      )}
 
       <SubmitButton />
     </form>
