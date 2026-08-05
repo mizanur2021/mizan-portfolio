@@ -4,11 +4,58 @@ import { useRef } from "react";
 import Image from "next/image";
 import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import { ArrowDown, Sparkles } from "lucide-react";
-import { roles } from "@/data/content";
+import { roles, tools } from "@/data/content";
 import { Button } from "@/components/ui/button";
 import { Particles } from "@/components/shared/particles";
 import { GridBackground } from "@/components/shared/grid-bg";
 import { useTyping } from "@/hooks/use-typing";
+
+/** Mobile-only: tool icons orbiting the circular profile photo. */
+const ORBIT_RADIUS = 92;
+const ORBIT_DURATION = 26;
+
+function OrbitingTools({ reduceMotion }: { reduceMotion: boolean }) {
+  return (
+    <motion.div
+      className="absolute inset-0"
+      animate={reduceMotion ? undefined : { rotate: 360 }}
+      transition={{ duration: ORBIT_DURATION, repeat: Infinity, ease: "linear" }}
+    >
+      {tools.map((tool, i) => {
+        const angle = (i / tools.length) * 360;
+        return (
+          <div
+            key={tool.name}
+            className="absolute left-1/2 top-1/2 h-0 w-0"
+            style={{ transform: `rotate(${angle}deg) translate(${ORBIT_RADIUS}px)` }}
+          >
+            {/* static centering offset — kept on a plain div so it can't be
+                clobbered by framer-motion's own transform management below */}
+            <div className="-translate-x-1/2 -translate-y-1/2">
+              <motion.div
+                initial={{ rotate: -angle }}
+                animate={reduceMotion ? undefined : { rotate: -angle - 360 }}
+                transition={{ duration: ORBIT_DURATION, repeat: Infinity, ease: "linear" }}
+                className="glass grid h-9 w-9 place-items-center rounded-full shadow-glow"
+              >
+                {tool.icon ? (
+                  <tool.icon size={15} style={{ color: tool.color }} />
+                ) : (
+                  <span
+                    className="grid h-4 w-4 place-items-center rounded text-[8px] font-bold"
+                    style={{ background: `${tool.color}22`, color: tool.color }}
+                  >
+                    {tool.mark?.[0]}
+                  </span>
+                )}
+              </motion.div>
+            </div>
+          </div>
+        );
+      })}
+    </motion.div>
+  );
+}
 
 export function Hero() {
   const typed = useTyping(roles);
@@ -48,31 +95,73 @@ export function Hero() {
 
       <div className="container relative z-10 flex flex-col gap-6 py-6 sm:gap-8 sm:py-8 lg:grid lg:grid-cols-[1.15fr_0.85fr] lg:items-center lg:gap-12 lg:py-16">
 
-        {/* Profile photo — top on mobile, right on desktop */}
+        {/* Profile photo — circular with orbiting tool icons on mobile, unchanged rounded-square on tablet/desktop */}
         <motion.div
           initial={{ opacity: 0, scale: 0.92 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.9, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
           style={{ y: photoY }}
-          className="relative mx-auto w-full max-w-[180px] sm:max-w-[240px] lg:order-2 lg:max-w-sm"
+          className="relative mx-auto hidden w-full sm:block sm:max-w-[240px] lg:order-2 lg:max-w-sm"
         >
           <div className="absolute inset-0 -z-10 animate-spin-slow rounded-[2.5rem] bg-gradient-to-tr from-primary/40 via-transparent to-secondary/40 blur-2xl" />
-          <div className="glass overflow-hidden rounded-[1.5rem] p-1.5 shadow-cinematic sm:rounded-[2rem] sm:p-2">
-            <div className="relative aspect-square overflow-hidden rounded-[1rem] sm:aspect-[4/5] sm:rounded-[1.5rem]">
+          <div className="glass overflow-hidden rounded-[2rem] p-2 shadow-cinematic">
+            <div className="relative aspect-[4/5] overflow-hidden rounded-[1.5rem]">
               <Image
                 src="/profile-image.jpg"
                 alt="Md Mizanur Rahman"
                 fill
                 priority
-                sizes="(max-width: 640px) 180px, (max-width: 1024px) 240px, 380px"
+                sizes="(max-width: 1024px) 240px, 380px"
                 className="object-cover object-top"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-bg via-transparent to-transparent" />
             </div>
           </div>
-          <div className="glass absolute -bottom-3 -left-3 rounded-xl px-3 py-2 shadow-glow sm:-bottom-5 sm:-left-5 sm:rounded-2xl sm:px-4 sm:py-3">
-            <p className="font-display text-base font-bold text-primary sm:text-2xl">1000+</p>
-            <p className="text-[10px] text-muted sm:text-xs">Videos ranked #1</p>
+          <div className="glass absolute -bottom-5 -left-5 rounded-2xl px-4 py-3 shadow-glow">
+            <p className="font-display text-2xl font-bold text-primary">1000+</p>
+            <p className="text-xs text-muted">Videos ranked #1</p>
+          </div>
+        </motion.div>
+
+        {/* Mobile-only: circular photo with tool icons orbiting around it */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.92 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.9, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+          style={{ y: photoY }}
+          className="mx-auto flex flex-col items-center sm:hidden"
+        >
+          <div className="relative h-[236px] w-[236px]">
+            <OrbitingTools reduceMotion={Boolean(reduceMotion)} />
+
+            <div className="absolute left-1/2 top-1/2 h-[134px] w-[134px] -translate-x-1/2 -translate-y-1/2">
+              <div className="absolute inset-0 -z-10 animate-spin-slow rounded-full bg-gradient-to-tr from-primary/40 via-transparent to-secondary/40 blur-2xl" />
+              <div className="glass h-full w-full overflow-hidden rounded-full p-1 shadow-cinematic">
+                <div className="relative h-full w-full overflow-hidden rounded-full">
+                  <Image
+                    src="/profile-image.jpg"
+                    alt="Md Mizanur Rahman"
+                    fill
+                    priority
+                    sizes="134px"
+                    className="object-cover object-top"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-bg/40 via-transparent to-transparent" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* caption sits below the orbit — kept out of it entirely so a
+              rotating icon can never pass behind/through it. The orbit's
+              own sweep reaches to within ~8px of the container's bottom
+              edge, so this needs real positive clearance, not just the
+              natural flex gap. */}
+          <div className="glass mt-5 whitespace-nowrap rounded-full px-3.5 py-1.5 shadow-glow">
+            <p className="flex items-baseline gap-1.5">
+              <span className="font-display text-sm font-bold text-primary">1000+</span>
+              <span className="text-[10px] text-muted">videos ranked #1</span>
+            </p>
           </div>
         </motion.div>
 
