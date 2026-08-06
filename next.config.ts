@@ -10,6 +10,29 @@ import type { NextConfig } from "next";
 const LEGACY_HOSTS = ["dmmizan.vercel.app"];
 const CANONICAL_HOST = "www.freelancermizan.com";
 
+/**
+ * This is a single-page site — About, Skills, Services, etc. are anchor
+ * sections on "/", not real routes. People still type/link "/about" style
+ * URLs out of habit, which 404s without this. Send them to the matching
+ * section instead of a dead end. Key = the path people type, value = the
+ * actual section id on the homepage.
+ */
+const SECTION_REDIRECTS: Record<string, string> = {
+  about: "about",
+  skills: "skills",
+  services: "services",
+  pricing: "pricing",
+  work: "work",
+  portfolio: "work",
+  testimonials: "testimonials",
+  clients: "testimonials",
+  resume: "resume",
+  cv: "resume",
+  certificates: "certificates",
+  certifications: "certificates",
+  contact: "contact",
+};
+
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
@@ -32,6 +55,12 @@ const nextConfig: NextConfig = {
         destination: `https://${CANONICAL_HOST}/:path*`,
         permanent: true,
       },
+      // Section-name paths -> homepage anchor (see SECTION_REDIRECTS above).
+      ...Object.entries(SECTION_REDIRECTS).map(([path, anchor]) => ({
+        source: `/${path}`,
+        destination: `/#${anchor}`,
+        permanent: false,
+      })),
     ];
   },
 
