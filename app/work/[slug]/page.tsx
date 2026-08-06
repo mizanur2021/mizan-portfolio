@@ -2,10 +2,11 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { ArrowLeft, ArrowRight, TrendingUp } from "lucide-react";
+import { ArrowLeft, ArrowRight, ChevronRight, TrendingUp } from "lucide-react";
 import { getPortfolioProjects } from "@/lib/get-portfolio-data";
 import { Badge } from "@/components/ui/badge";
 import { site } from "@/lib/site";
+import { caseStudyJsonLd } from "@/lib/jsonld";
 
 export const revalidate = 3600;
 
@@ -52,10 +53,22 @@ export default async function ProjectPage({
 
   return (
     <main className="relative min-h-screen py-16 sm:py-24">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(caseStudyJsonLd(project)) }}
+      />
       <div className="container max-w-3xl">
+        <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-xs text-muted">
+          <Link href="/" className="transition-colors hover:text-primary">Home</Link>
+          <ChevronRight size={12} className="shrink-0" />
+          <Link href="/#work" className="transition-colors hover:text-primary">Work</Link>
+          <ChevronRight size={12} className="shrink-0" />
+          <span className="truncate text-white/70">{project.title}</span>
+        </nav>
+
         <Link
           href="/#work"
-          className="inline-flex items-center gap-2 text-sm text-muted transition-colors hover:text-primary"
+          className="mt-4 inline-flex items-center gap-2 text-sm text-muted transition-colors hover:text-primary"
         >
           <ArrowLeft size={15} /> Back to all work
         </Link>

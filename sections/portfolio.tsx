@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import dynamic from "next/dynamic";
+import Link from "next/link";
 import Image from "next/image";
 import { motion, AnimatePresence, LayoutGroup } from "framer-motion";
 import { TrendingUp } from "lucide-react";
@@ -14,6 +15,8 @@ const ProjectModal = dynamic(
   () => import("@/components/shared/project-modal").then(m => m.ProjectModal),
   { ssr: false }
 );
+
+const MotionLink = motion.create(Link);
 
 /* ── Portfolio ───────────────────────────────────────────────────────────── */
 export function Portfolio({ projects }: { projects: Project[] }) {
@@ -45,7 +48,11 @@ export function Portfolio({ projects }: { projects: Project[] }) {
     return () => window.removeEventListener("popstate", onPop);
   }, [active?.id]);
 
-  const openProject = (p: Project) => {
+  const openProject = (p: Project, e: React.MouseEvent) => {
+    // let modified/middle clicks behave normally (open the real /work/[id]
+    // page in a new tab) instead of hijacking them into the modal
+    if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
+    e.preventDefault();
     setModalLoaded(true);
     setActive(p);
   };
@@ -100,14 +107,15 @@ export function Portfolio({ projects }: { projects: Project[] }) {
           >
             <AnimatePresence mode="popLayout">
               {filtered.map(p => (
-                <motion.button
+                <MotionLink
+                  href={`/work/${p.id}`}
                   layout
                   key={p.id}
                   initial={{ opacity: 0, scale: 0.96 }}
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.96 }}
                   transition={{ duration: 0.4 }}
-                  onClick={() => openProject(p)}
+                  onClick={(e: React.MouseEvent) => openProject(p, e)}
                   className="group relative block w-full break-inside-avoid overflow-hidden rounded-2xl border border-line text-left"
                 >
                   <div className="relative aspect-[4/3] overflow-hidden">
@@ -130,7 +138,7 @@ export function Portfolio({ projects }: { projects: Project[] }) {
                     <h3 className="mt-3 font-display text-lg font-semibold">{p.title}</h3>
                     <p className="mt-1 line-clamp-2 text-sm text-muted">{p.description}</p>
                   </div>
-                </motion.button>
+                </MotionLink>
               ))}
             </AnimatePresence>
           </motion.div>

@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { Mail, Phone, MapPin, Map } from "lucide-react";
 import { FaYoutube, FaLinkedinIn, FaFacebookF, FaInstagram, FaXTwitter, FaWhatsapp } from "react-icons/fa6";
 import { site } from "@/lib/site";
@@ -127,9 +128,13 @@ export function Footer() {
 
       {/* ── bottom bar ── */}
       <div className="border-t border-line/60">
-        <div className="container flex flex-col items-center justify-between gap-2 py-5 text-xs text-muted sm:flex-row">
+        <div className="container flex flex-col items-center justify-between gap-3 py-5 text-xs text-muted sm:flex-row">
           <p>© {new Date().getFullYear()} {site.name}. All rights reserved.</p>
-          <p className="text-muted/60">Designed &amp; built with ❤️ in Bangladesh</p>
+          <div className="flex items-center gap-4">
+            <Link href="/privacy" className="transition-colors hover:text-primary">Privacy Policy</Link>
+            <Link href="/terms" className="transition-colors hover:text-primary">Terms of Use</Link>
+            <span className="text-muted/60">Designed &amp; built with ❤️ in Bangladesh</span>
+          </div>
         </div>
       </div>
     </footer>

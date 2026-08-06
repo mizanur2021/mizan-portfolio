@@ -354,3 +354,40 @@ export function localBusinessJsonLd() {
     ],
   };
 }
+
+/** Per-project structured data for /work/[slug] — ties each case study back to the verified Person entity, plus its own breadcrumb trail. */
+export function caseStudyJsonLd(project: {
+  id: string;
+  title: string;
+  description: string;
+  result: string;
+  cover: string;
+  category: string;
+}) {
+  const url = `${site.url}/work/${project.id}`;
+  return {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "CreativeWork",
+        "@id": `${url}#work`,
+        name: project.title,
+        description: `${project.description} ${project.result}.`,
+        url,
+        image: project.cover,
+        about: project.category,
+        author: { "@id": `${site.url}/#person` },
+        creator: { "@id": `${site.url}/#person` },
+        publisher: { "@id": `${site.url}/#organization` },
+      },
+      {
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: "Home", item: site.url },
+          { "@type": "ListItem", position: 2, name: "Work", item: `${site.url}/#work` },
+          { "@type": "ListItem", position: 3, name: project.title, item: url },
+        ],
+      },
+    ],
+  };
+}
