@@ -5,7 +5,7 @@ import dynamic from "next/dynamic";
 import Link from "next/link";
 import Image from "next/image";
 import { motion, AnimatePresence, LayoutGroup } from "framer-motion";
-import { TrendingUp, ChevronDown } from "lucide-react";
+import { TrendingUp, ChevronDown, ChevronUp } from "lucide-react";
 import { categories, type Project } from "@/data/content";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { Badge } from "@/components/ui/badge";
@@ -20,19 +20,23 @@ const MotionLink = motion.create(Link);
 
 /* ── Portfolio ───────────────────────────────────────────────────────────── */
 const MOBILE_PREVIEW_COUNT = 3;
+const DESKTOP_PREVIEW_COUNT = 8;
 
 export function Portfolio({ projects }: { projects: Project[] }) {
   const [filter, setFilter] = useState<(typeof categories)[number]>("All");
   const [active, setActive] = useState<Project | null>(null);
   const [modalLoaded, setModalLoaded] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
-  const [showAllMobile, setShowAllMobile] = useState(false);
+  const [showAll, setShowAll] = useState(false);
   const savedScrollY = useRef(0);
 
   const filtered = filter === "All" ? projects : projects.filter(p => p.category === filter);
-  const visible = isMobile && !showAllMobile ? filtered.slice(0, MOBILE_PREVIEW_COUNT) : filtered;
+  const previewCount = isMobile ? MOBILE_PREVIEW_COUNT : DESKTOP_PREVIEW_COUNT;
+  const visible = showAll ? filtered : filtered.slice(0, previewCount);
 
-  /* phones get a 3-project preview with a "More" button instead of the full grid */
+  /* each category starts collapsed to a short preview, with a See More/Less
+     toggle to reveal or re-hide the rest — same behavior on phone and desktop,
+     just a shorter preview on phone */
   useEffect(() => {
     const mq = window.matchMedia("(max-width: 639px)");
     setIsMobile(mq.matches);
@@ -41,8 +45,8 @@ export function Portfolio({ projects }: { projects: Project[] }) {
     return () => mq.removeEventListener("change", onChange);
   }, []);
 
-  /* collapse back to the 3-project preview whenever the filter changes */
-  useEffect(() => { setShowAllMobile(false); }, [filter]);
+  /* collapse back to the preview whenever the filter changes */
+  useEffect(() => { setShowAll(false); }, [filter]);
 
   /* iOS-safe body scroll lock: fixes position:fixed so background doesn't jump to top */
   useEffect(() => {
@@ -161,13 +165,17 @@ export function Portfolio({ projects }: { projects: Project[] }) {
           </motion.div>
         </LayoutGroup>
 
-        {isMobile && !showAllMobile && filtered.length > MOBILE_PREVIEW_COUNT && (
-          <div className="mt-6 flex justify-center sm:hidden">
+        {filtered.length > previewCount && (
+          <div className="mt-6 flex justify-center">
             <button
-              onClick={() => setShowAllMobile(true)}
+              onClick={() => setShowAll(v => !v)}
               className="inline-flex items-center gap-1.5 rounded-full border border-line px-5 py-2.5 text-sm font-medium text-white transition-colors hover:border-primary/50 hover:text-primary"
             >
-              More <ChevronDown size={15} />
+              {showAll ? (
+                <>Less <ChevronUp size={15} /></>
+              ) : (
+                <>See More <ChevronDown size={15} /></>
+              )}
             </button>
           </div>
         )}
