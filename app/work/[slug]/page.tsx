@@ -87,13 +87,13 @@ export default async function ProjectPage({
         <p className="mt-3 text-base leading-relaxed text-muted">{project.description}</p>
 
         {project.cover && (
-          <div className="relative mt-8 aspect-video overflow-hidden rounded-2xl border border-line bg-white/[0.02]">
+          <div className="relative mt-8 aspect-video overflow-hidden rounded-2xl border border-line bg-black/90">
             <Image
               src={project.cover}
               alt={project.title}
               fill
               sizes="(max-width: 768px) 100vw, 768px"
-              className="object-cover"
+              className="object-contain"
               priority
             />
           </div>

@@ -5,7 +5,7 @@ import { createPortal } from "react-dom";
 import Link from "next/link";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, ChevronLeft, ChevronRight, ArrowRight, TrendingUp, ZoomIn, ZoomOut } from "lucide-react";
+import { X, ChevronLeft, ChevronRight, ArrowRight, TrendingUp, ZoomIn, ZoomOut, Maximize2, Minimize2, ExternalLink } from "lucide-react";
 import { type Project } from "@/data/content";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
@@ -24,9 +24,16 @@ function ProjectModalInner({ project, onClose }: { project: Project; onClose: ()
   const [pan, setPan] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
   const [hasDragged, setHasDragged] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
   const dragOrigin = useRef({ x: 0, y: 0 });
   const panAtDrag = useRef({ x: 0, y: 0 });
+  const panRef = useRef({ x: 0, y: 0 });
   const imgContainerRef = useRef<HTMLDivElement>(null);
+  const scrollBodyRef = useRef<HTMLDivElement>(null);
+  const transformElRef = useRef<HTMLDivElement>(null);
+
+  /* keep the live ref in sync with committed state (image switches, zoom resets, etc.) */
+  useEffect(() => { panRef.current = pan; }, [pan]);
 
   /* reset zoom when switching images */
   const goTo = useCallback((i: number) => {
@@ -38,36 +45,61 @@ function ProjectModalInner({ project, onClose }: { project: Project; onClose: ()
   const prev = () => goTo((imgIdx - 1 + images.length) % images.length);
   const next = () => goTo((imgIdx + 1) % images.length);
 
-  /* wheel zoom — must be non-passive to preventDefault */
+  /* wheel: ctrl/cmd+wheel zooms; a plain wheel is forwarded explicitly to the
+     sheet's scroll container (not left to default scroll-chaining, which some
+     browsers won't propagate past a non-passive listener) so it reliably
+     scrolls down to the description below the image. */
   useEffect(() => {
     const el = imgContainerRef.current;
     if (!el) return;
     const onWheel = (e: WheelEvent) => {
+      if (e.ctrlKey || e.metaKey) {
+        e.preventDefault();
+        const step = e.deltaY < 0 ? 0.3 : -0.3;
+        setZoom(z => Math.max(1, Math.min(4, z + step)));
+        return;
+      }
       e.preventDefault();
-      const step = e.deltaY < 0 ? 0.3 : -0.3;
-      setZoom(z => Math.max(1, Math.min(4, z + step)));
+      scrollBodyRef.current?.scrollBy({ top: e.deltaY, left: e.deltaX, behavior: "auto" });
     };
     el.addEventListener("wheel", onWheel, { passive: false });
     return () => el.removeEventListener("wheel", onWheel);
   }, []);
 
-  /* pinch-to-zoom — must be non-passive to preventDefault */
+  /* touch: two fingers pinch-zoom; one finger is forwarded explicitly to the
+     sheet's scroll container so a swipe over the image scrolls down to the
+     description, the same way it does with the mouse wheel above. */
   useEffect(() => {
     const el = imgContainerRef.current;
     if (!el) return;
     let startDist: number | null = null;
+    let lastY: number | null = null;
 
     const onTouchStart = (e: TouchEvent) => {
-      if (e.touches.length === 2) startDist = touchDist(e.touches);
+      if (e.touches.length === 2) {
+        startDist = touchDist(e.touches);
+        lastY = null;
+      } else if (e.touches.length === 1) {
+        lastY = e.touches[0].clientY;
+        startDist = null;
+      }
     };
     const onTouchMove = (e: TouchEvent) => {
-      if (e.touches.length !== 2 || startDist === null) return;
-      e.preventDefault();
-      const d = touchDist(e.touches);
-      setZoom(z => Math.max(1, Math.min(4, z * (d / startDist!))));
-      startDist = d;
+      if (e.touches.length === 2 && startDist !== null) {
+        e.preventDefault();
+        const d = touchDist(e.touches);
+        setZoom(z => Math.max(1, Math.min(4, z * (d / startDist!))));
+        startDist = d;
+        return;
+      }
+      if (e.touches.length === 1 && lastY !== null) {
+        const y = e.touches[0].clientY;
+        e.preventDefault();
+        scrollBodyRef.current?.scrollBy({ top: lastY - y, behavior: "auto" });
+        lastY = y;
+      }
     };
-    const onTouchEnd = () => { startDist = null; };
+    const onTouchEnd = () => { startDist = null; lastY = null; };
 
     el.addEventListener("touchstart", onTouchStart, { passive: true });
     el.addEventListener("touchmove", onTouchMove, { passive: false });
@@ -79,27 +111,39 @@ function ProjectModalInner({ project, onClose }: { project: Project; onClose: ()
     };
   }, []);
 
-  /* mouse drag to pan when zoomed */
+  /* mouse drag to pan when zoomed — mutates the transform directly during the
+     drag instead of calling setPan() per pixel (that was re-rendering the whole
+     modal on every mousemove and made dragging/clicking feel laggy); the ref is
+     only committed back to React state once, on mouseup. */
   const onMouseDown = (e: React.MouseEvent) => {
     if (zoom <= 1) return;
     e.preventDefault();
     setIsDragging(true);
     setHasDragged(false);
     dragOrigin.current = { x: e.clientX, y: e.clientY };
-    panAtDrag.current = pan;
+    panAtDrag.current = panRef.current;
   };
   const onMouseMove = (e: React.MouseEvent) => {
     if (!isDragging) return;
     const dx = e.clientX - dragOrigin.current.x;
     const dy = e.clientY - dragOrigin.current.y;
     if (Math.abs(dx) > 2 || Math.abs(dy) > 2) setHasDragged(true);
-    setPan({ x: panAtDrag.current.x + dx, y: panAtDrag.current.y + dy });
+    const next = { x: panAtDrag.current.x + dx, y: panAtDrag.current.y + dy };
+    panRef.current = next;
+    if (transformElRef.current) {
+      transformElRef.current.style.transform = `scale(${zoom}) translate(${next.x / zoom}px, ${next.y / zoom}px)`;
+    }
   };
-  const onMouseUp = () => setIsDragging(false);
+  const onMouseUp = () => {
+    if (isDragging) setPan(panRef.current);
+    setIsDragging(false);
+  };
 
-  /* click: zoom in/out (suppressed if user just dragged) */
+  /* click: outside fullscreen, open the image full-screen; once fullscreen,
+     click zooms in/out (suppressed if user just dragged) */
   const onContainerClick = () => {
     if (hasDragged) { setHasDragged(false); return; }
+    if (!isFullscreen) { setIsFullscreen(true); return; }
     if (zoom > 1) { setZoom(1); setPan({ x: 0, y: 0 }); }
     else setZoom(2);
   };
@@ -112,6 +156,22 @@ function ProjectModalInner({ project, onClose }: { project: Project; onClose: ()
       return n;
     });
   };
+
+  /* keyboard: Escape exits fullscreen first (then closes); Left/Right switch images */
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        if (isFullscreen) setIsFullscreen(false);
+        else onClose();
+        return;
+      }
+      if (images.length <= 1) return;
+      if (e.key === "ArrowLeft") { e.preventDefault(); prev(); }
+      else if (e.key === "ArrowRight") { e.preventDefault(); next(); }
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [isFullscreen, onClose, imgIdx, images.length]);
 
   return createPortal(
     <motion.div
@@ -127,11 +187,14 @@ function ProjectModalInner({ project, onClose }: { project: Project; onClose: ()
         exit={{ opacity: 0, y: 56 }}
         transition={{ type: "spring", stiffness: 300, damping: 30 }}
         onClick={e => e.stopPropagation()}
-        className="relative flex w-full flex-col overflow-hidden bg-card sm:max-w-2xl sm:rounded-3xl"
-        style={{ maxHeight: "92dvh" }}
+        className={cn(
+          "relative flex w-full flex-col overflow-hidden bg-card",
+          isFullscreen ? "h-full max-w-none rounded-none" : "sm:max-w-2xl sm:rounded-3xl"
+        )}
+        style={{ maxHeight: isFullscreen ? "100dvh" : "92dvh" }}
       >
         {/* ── sticky header ── */}
-        <div className="flex shrink-0 items-center justify-between border-b border-line bg-card px-4 py-3">
+        <div className="flex shrink-0 flex-wrap items-center justify-between gap-y-1 border-b border-line bg-card px-3 py-2.5 sm:px-4 sm:py-3">
           <p className="text-sm text-muted">
             {images.length > 1 ? `${imgIdx + 1} / ${images.length}` : project.category}
           </p>
@@ -154,8 +217,15 @@ function ProjectModalInner({ project, onClose }: { project: Project; onClose: ()
               <ZoomIn size={15} />
             </button>
             <button
-              onClick={onClose}
-              aria-label="Close"
+              onClick={() => setIsFullscreen(f => !f)}
+              aria-label={isFullscreen ? "Exit fullscreen" : "View fullscreen"}
+              className="ml-1 grid h-8 w-8 place-items-center rounded-full text-muted transition-colors hover:bg-white/5 hover:text-white"
+            >
+              {isFullscreen ? <Minimize2 size={15} /> : <Maximize2 size={15} />}
+            </button>
+            <button
+              onClick={() => (isFullscreen ? setIsFullscreen(false) : onClose())}
+              aria-label={isFullscreen ? "Exit fullscreen" : "Close"}
               className="ml-1.5 grid h-8 w-8 place-items-center rounded-full bg-white/8 text-white transition-colors hover:bg-white/15"
             >
               <X size={16} />
@@ -164,13 +234,16 @@ function ProjectModalInner({ project, onClose }: { project: Project; onClose: ()
         </div>
 
         {/* ── scrollable body ── */}
-        <div className="flex-1 overflow-y-auto overscroll-contain">
+        <div
+          ref={scrollBodyRef}
+          className={cn("flex-1", isFullscreen ? "overflow-hidden" : "overflow-y-auto overscroll-contain")}
+        >
 
           {/* image viewer */}
-          <div className="relative select-none bg-black/90">
+          <div className={cn("relative select-none bg-black/90", isFullscreen && "h-full")}>
             <div
               ref={imgContainerRef}
-              className="relative aspect-video overflow-hidden"
+              className={cn("relative overflow-hidden", isFullscreen ? "h-full w-full" : "aspect-video")}
               style={{ cursor: zoom > 1 ? (isDragging ? "grabbing" : "grab") : "zoom-in" }}
               onMouseDown={onMouseDown}
               onMouseMove={onMouseMove}
@@ -179,6 +252,7 @@ function ProjectModalInner({ project, onClose }: { project: Project; onClose: ()
               onClick={onContainerClick}
             >
               <div
+                ref={transformElRef}
                 style={{
                   width: "100%",
                   height: "100%",
@@ -192,7 +266,7 @@ function ProjectModalInner({ project, onClose }: { project: Project; onClose: ()
                   alt={`${project.title} — image ${imgIdx + 1}`}
                   fill
                   sizes="(max-width:640px) 100vw, 672px"
-                  className="object-cover"
+                  className="object-contain"
                   draggable={false}
                   priority
                 />
@@ -221,7 +295,7 @@ function ProjectModalInner({ project, onClose }: { project: Project; onClose: ()
           </div>
 
           {/* thumbnail strip */}
-          {images.length > 1 && (
+          {!isFullscreen && images.length > 1 && (
             <div className="flex gap-2 overflow-x-auto bg-black/60 px-3 py-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
               {images.map((src, i) => (
                 <button
@@ -240,7 +314,22 @@ function ProjectModalInner({ project, onClose }: { project: Project; onClose: ()
             </div>
           )}
 
+          {/* open the full case-study page in a new tab */}
+          {!isFullscreen && (
+            <div className="px-3 pt-3 sm:px-5">
+              <Link
+                href={`/work/${project.id}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-3 text-sm font-semibold text-primary-foreground shadow-glow transition-opacity hover:opacity-90"
+              >
+                Open Portfolio <ExternalLink size={15} />
+              </Link>
+            </div>
+          )}
+
           {/* project details */}
+          {!isFullscreen && (
           <div className="p-5 sm:p-7">
             <div className="flex flex-wrap items-center gap-2">
               <Badge>{project.category}</Badge>
@@ -273,16 +362,8 @@ function ProjectModalInner({ project, onClose }: { project: Project; onClose: ()
             <div className="mt-5 flex flex-wrap gap-2 pb-2">
               {project.tags.map(t => <Badge key={t}>#{t}</Badge>)}
             </div>
-
-            <Link
-              href={`/work/${project.id}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-5 inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:underline"
-            >
-              Open as a shareable page <ArrowRight size={13} />
-            </Link>
           </div>
+          )}
 
         </div>
       </motion.div>
