@@ -5,7 +5,7 @@ import dynamic from "next/dynamic";
 import Link from "next/link";
 import Image from "next/image";
 import { motion, AnimatePresence, LayoutGroup } from "framer-motion";
-import { TrendingUp } from "lucide-react";
+import { TrendingUp, ChevronDown } from "lucide-react";
 import { categories, type Project } from "@/data/content";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { Badge } from "@/components/ui/badge";
@@ -19,13 +19,30 @@ const ProjectModal = dynamic(
 const MotionLink = motion.create(Link);
 
 /* ── Portfolio ───────────────────────────────────────────────────────────── */
+const MOBILE_PREVIEW_COUNT = 3;
+
 export function Portfolio({ projects }: { projects: Project[] }) {
   const [filter, setFilter] = useState<(typeof categories)[number]>("All");
   const [active, setActive] = useState<Project | null>(null);
   const [modalLoaded, setModalLoaded] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const [showAllMobile, setShowAllMobile] = useState(false);
   const savedScrollY = useRef(0);
 
   const filtered = filter === "All" ? projects : projects.filter(p => p.category === filter);
+  const visible = isMobile && !showAllMobile ? filtered.slice(0, MOBILE_PREVIEW_COUNT) : filtered;
+
+  /* phones get a 3-project preview with a "More" button instead of the full grid */
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 639px)");
+    setIsMobile(mq.matches);
+    const onChange = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
+  }, []);
+
+  /* collapse back to the 3-project preview whenever the filter changes */
+  useEffect(() => { setShowAllMobile(false); }, [filter]);
 
   /* iOS-safe body scroll lock: fixes position:fixed so background doesn't jump to top */
   useEffect(() => {
@@ -99,14 +116,14 @@ export function Portfolio({ projects }: { projects: Project[] }) {
           ))}
         </div>
 
-        {/* masonry grid */}
+        {/* grid */}
         <LayoutGroup>
           <motion.div
             layout
-            className="mt-10 columns-1 gap-4 sm:columns-2 lg:columns-4 [&>*]:mb-4"
+            className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4"
           >
             <AnimatePresence mode="popLayout">
-              {filtered.map(p => (
+              {visible.map(p => (
                 <MotionLink
                   href={`/work/${p.id}`}
                   layout
@@ -116,7 +133,7 @@ export function Portfolio({ projects }: { projects: Project[] }) {
                   exit={{ opacity: 0, scale: 0.96 }}
                   transition={{ duration: 0.4 }}
                   onClick={(e: React.MouseEvent) => openProject(p, e)}
-                  className="group relative block w-full break-inside-avoid overflow-hidden rounded-2xl border border-line text-left"
+                  className="group relative block w-full overflow-hidden rounded-2xl border border-line text-left"
                 >
                   <div className="relative aspect-[4/3] overflow-hidden">
                     <Image
@@ -143,6 +160,17 @@ export function Portfolio({ projects }: { projects: Project[] }) {
             </AnimatePresence>
           </motion.div>
         </LayoutGroup>
+
+        {isMobile && !showAllMobile && filtered.length > MOBILE_PREVIEW_COUNT && (
+          <div className="mt-6 flex justify-center sm:hidden">
+            <button
+              onClick={() => setShowAllMobile(true)}
+              className="inline-flex items-center gap-1.5 rounded-full border border-line px-5 py-2.5 text-sm font-medium text-white transition-colors hover:border-primary/50 hover:text-primary"
+            >
+              More <ChevronDown size={15} />
+            </button>
+          </div>
+        )}
       </div>
 
       {modalLoaded && <ProjectModal project={active} onClose={closeProject} />}

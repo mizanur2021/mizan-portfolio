@@ -139,7 +139,7 @@ export const services: Service[] = [
 export type Project = {
   id: string;
   title: string;
-  category: "YouTube SEO" | "Meta Ads" | "Google Ads" | "Shopify" | "Social Media";
+  category: "YouTube SEO" | "Meta Ads" | "Google Ads" | "WordPress" | "Social Media";
   cover: string;
   images: string[];
   description: string;
@@ -148,7 +148,7 @@ export type Project = {
   metrics: { label: string; before: string; after: string }[];
 };
 
-export const categories = ["All", "YouTube SEO", "Meta Ads", "Google Ads", "Shopify", "Social Media"] as const;
+export const categories = ["All", "YouTube SEO", "Meta Ads", "Google Ads", "WordPress", "Social Media"] as const;
 
 export const projects: Project[] = [
   {
@@ -216,7 +216,7 @@ export const projects: Project[] = [
   {
     id: "fashion-shopify",
     title: "Fashion Brand Storefront",
-    category: "Shopify",
+    category: "WordPress",
     cover:
       "https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=1200&q=80",
     images: [
@@ -227,7 +227,7 @@ export const projects: Project[] = [
     description:
       "Redesigned the store with a faster theme, sharper PDP, and a streamlined checkout.",
     result: "+71% conversion rate",
-    tags: ["Shopify", "CRO", "UX"],
+    tags: ["WordPress", "CRO", "UX"],
     metrics: [
       { label: "Conversion rate", before: "1.3%", after: "2.2%" },
       { label: "Page load", before: "4.1s", after: "1.4s" },

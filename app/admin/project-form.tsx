@@ -12,7 +12,7 @@ const CATEGORIES: Project["category"][] = [
   "YouTube SEO",
   "Meta Ads",
   "Google Ads",
-  "Shopify",
+  "WordPress",
   "Social Media",
 ];
 
